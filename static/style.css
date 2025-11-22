@@ -1,3 +1,67 @@
+:root {
+  --celadon: #a7d49b;
+  --muted-teal: #92ac86;
+  --stone: #696047;
+  --espresso: #55251d;
+  --garnet: #5a1807;
+  --bg: #0f0c09;
+  --card-bg: #18120d;
+  --text: #e8e4db;
+  --accent: #92ac86;
+}
+
+/* Reset & Base */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+  font-family: 'Segoe UI', system-ui, sans-serif; 
+  background: var(--bg); 
+  color: var(--text); 
+  line-height:1.6; 
+}
+.container { max-width:1200px; margin:0 auto; padding:0 20px; }
+a { color: var(--celadon); text-decoration:none; }
+a:hover { color: var(--muted-teal); }
+
+/* Header */
+header { 
+  background: linear-gradient(135deg, #0f0c09 0%, #1a140f 100%);
+  border-bottom: 2px solid var(--stone); 
+  position: sticky; top: 0; z-index: 100; 
+}
+header .container { display:flex; justify-content:space-between; align-items:center; padding:1rem 20px; gap:1rem; }
+.logo { height: 66px; width: auto; }
+.search-form input, .search-form select { 
+  background: #1c1611; border:1px solid var(--stone); color: var(--text); 
+}
+.search-form button { background: var(--garnet); }
+
+/* Cards & Buttons */
+.card { 
+  background: var(--card-bg); 
+  border: 1px solid var(--stone); 
+  transition: all 0.3s ease;
+}
+.card:hover { 
+  transform: translateY(-8px); 
+  box-shadow: 0 12px 30px rgba(146,172,134,0.15);
+  border-color: var(--muted-teal);
+}
+.add-btn, .btn-primary, .submit-review {
+  background: var(--garnet);
+  color: white;
+  transition: all 0.3s;
+}
+.add-btn:hover, .btn-primary:hover, .submit-review:hover {
+  background: #6b2f1f;
+}
+
+/* Ratings */
+.rating, .rating-big, .review-rating { color: var(--celadon); }
+
+/* Movie detail */
+.movie-detail { background: var(--card-bg); border: 1px solid var(--stone); }
+.detail-poster { border: 3px solid var(--stone); }
+
 /* Reset & Base */
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background:#0f0f1a; color:#eee; line-height:1.6; }
