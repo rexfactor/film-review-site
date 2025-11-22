@@ -2,13 +2,14 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-{% if is_admin %}
+{# Only show "Add Movie" button with ?admin=true in URL #}
+{% if show_admin %}
     <a href="{{ url_for('add_movie') }}" class="add-btn">+ Add Movie</a>
 {% endif %}
 
 <div class="grid">
     {% for movie in movies %}
-    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="card">
+    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}{% if show_admin %}?admin=true{% endif %}" class="card">
         <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
         <div class="info">
             <h3>{{ movie.title }} ({{ movie.year }})</h3>
