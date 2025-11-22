@@ -105,23 +105,4 @@ else:
     from waitress import serve
     port = int(os.environ.get("PORT", 5000))
     print(f"Starting Waitress server on port {port}...")
-    serve(app, host="0.0.0.0", port=port)        db.movies.append(movie)
-        flash("Movie added successfully!")
-        return redirect(url_for("movie_detail", movie_id=movie.id))
-    return render_template("add_movie.html")
-
-@app.route("/movie/<int:movie_id>/review", methods=["POST"])
-def add_review(movie_id):
-    movie = next((m for m in db.movies if m.id == movie_id), None)
-    if movie:
-        review = Review(
-            author=request.form["author"],
-            text=request.form["text"],
-            rating=int(request.form["rating"])
-        )
-        movie.reviews.append(review)
-        flash("Review added!")
-    return redirect(url_for("movie_detail", movie_id=movie_id))
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    serve(app, host="0.0.0.0", port=port)
