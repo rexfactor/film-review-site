@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<a href="{{ url_for('add_movie') }}" class="add-btn">+ Add Movie</a>
+
+{# Only show Add Movie button if logged in as admin #}
+{% if request.authorization and request.authorization.username == "admin" %}
+    <a href="{{ url_for('add_movie') }}" class="add-btn">+ Add Movie</a>
+{% endif %}
+
 <div class="grid">
     {% for movie in movies %}
     <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="card">
@@ -13,7 +18,7 @@
         </div>
     </a>
     {% else %}
-    <p>No movies found.</p>
+    <p>No movies yet.</p>
     {% endfor %}
 </div>
 {% endblock %}
