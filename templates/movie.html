@@ -15,7 +15,7 @@
                 {% if movie.average_rating() > 0 %}
                     ⭐ {{ movie.average_rating() }}/5 ({{ movie.reviews|length }} reviews)
                 {% else %}
-                    <em>No reviews yet — be the first!</em>
+                    <em>No reviews yet.</em>
                 {% endif %}
             </div>
         </div>
@@ -26,15 +26,46 @@
         <p>{{ movie.description or "No description available." }}</p>
     </div>
 
-    {% if request.authorization and request.authorization.username == "admin" %}
-<div class="reviews-section">
-    <h2>Add Your Review</h2>
-    <form method="POST" action="{{ url_for('add_review', movie_id=movie.id) }}" class="review-form">
-        <textarea name="text" placeholder="Your thoughts on {{ movie.title }}..." required rows="4"></textarea>
-        
-        <div class="rating-input">
-            <label>Rating:</label>
-            {% for i in range(5,0,-1) %}
+    {# === ADMIN-ONLY: Add Review Form === #}
+    {% if is_admin %}
+    <div class="reviews-section">
+        <h2>Add Your Review</h2>
+        <form method="POST" action="{{ url_for('add_review', movie_id=movie.id) }}" class="review-form">
+            <textarea name="text" placeholder="Your thoughts on {{ movie.title }}..." required rows="5"></textarea>
+            
+            <div class="rating-input">
+                <label>Rating:</label>
+                {% for i in range(5,0,-1) %}
+                    <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" required>
+                    <label for="star{{ i }}">★</label>
+                {% endfor %}
+            </div>
+            
+            <button type="submit" class="submit-review">Save Review</button>
+        </form>
+    </div>
+    {% endif %}
+
+    {# === PUBLIC: Show existing reviews === #}
+    <div class="reviews-section">
+        <h2>Reviews ({{ movie.reviews|length }})</h2>
+        {% if movie.reviews %}
+            {% for review in movie.reviews %}
+            <div class="review">
+                <div class="review-header">
+                    <strong>{{ review.author }}</strong>
+                    <span class="review-rating">{% for _ in range(review.rating) %}★{% endfor %}</span>
+                    <small>{{ review.date }}</small>
+                </div>
+                <p>{{ review.text }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}            {% for i in range(5,0,-1) %}
                 <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" required>
                 <label for="star{{ i }}">★</label>
             {% endfor %}
