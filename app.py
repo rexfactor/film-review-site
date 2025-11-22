@@ -1,40 +1,85 @@
-# app.py
-import os
-from flask import Flask, render_template, request, redirect, url_for, flash, Response
-from data import db, Movie, Review
-from functools import wraps
+# data.py
+from datetime import datetime
+from typing import List, Optional
 
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "super-secret-key-change-in-production")
+class Movie:
+    _id_counter = 1
 
-# ────────────────────────── ADMIN AUTH (for routes only) ──────────────────────────
-# Change this password to anything you want (keep the quotes)
-ADMIN_PASSWORD = "MySuperSecretPassword2025!"
+    def __init__(self, title: str, year: int, genre: str, director: str, poster_url: str = "", description: str = ""):
+        self.id = Movie._id_counter
+        Movie._id_counter += 1
+        self.title = title
+        self.year = year
+        self.genre = genre
+        self.director = director
+        self.poster_url = poster_url or f"https://via.placeholder.com/300x450?text={title.replace(' ', '+')}"
+        self.description = description
+        self.reviews: List[Review] = []
+        self.created_at = datetime.now()
 
-def check_auth():
-    auth = request.authorization
-    return auth and auth.username == "admin" and auth.password == ADMIN_PASSWORD
+    def average_rating(self) -> float:
+        if not self.reviews:
+            return 0.0
+        return round(sum(r.rating for r in self.reviews) / len(self.reviews), 1)
 
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if not check_auth():
-            return Response(
-                'Login required to access this page.',
-                401,
-                {'WWW-Authenticate': 'Basic realm="Login Required"'}
-            )
-        return f(*args, **kwargs)
-    return decorated
-# ─────────────────────────────────────────────────────────────────
+class Review:
+    def __init__(self, author: str, text: str, rating: int):
+        self.author = author
+        self.text = text
+        self.rating = rating  # 1–5
+        self.date = datetime.now().strftime("%B %d, %Y")
 
-@app.route("/")
-def index():
-    query = request.args.get("q", "").strip()
-    genre = request.args.get("genre", "").strip()
-    show_admin = request.args.get("admin") == "true"  # ← NEW: Simple URL toggle
+class Database:
+    def __init__(self):
+        self.movies: List[Movie] = []
+        self._seed_data()
 
-    movies = db.movies
+    def _seed_data(self):
+        # Starter movies with YOUR placeholder reviews (customize these!)
+        inception = Movie(
+            title="Inception", year=2010, genre="Sci-Fi", director="Christopher Nolan",
+            description="A thief who steals corporate secrets through dream-sharing technology takes on a final job: planting an idea into the mind of a CEO.",
+            poster_url="https://image.tmdb.org/t/p/w600_and_h900_bestv2/9gk7adHYeDkXNK0kuA7cfg5i9f8.jpg"
+        )
+        inception.reviews = [
+            Review("You", "Nolan's layered dream worlds still haunt me — a perfect blend of heist and philosophy.", 5),
+            Review("You", "The spinning top ending debate rages on, but the emotional core hits hardest.", 5)
+        ]
+
+        dune = Movie("Dune: Part Two", year=2024, genre="Sci-Fi", director="Denis Villeneuve",
+                     description="Paul Atreides unites with Chani and the Fremen while seeking revenge against those who destroyed his family.",
+                     poster_url="https://image.tmdb.org/t/p/w600_and_h900_bestv2/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg"
+        )
+        dune.reviews = [
+            Review("You", "Villeneuve turns Herbert's epic into visual poetry — the sandworm rides alone are worth the ticket.", 5),
+            Review("You", "Deeper themes of colonialism hit differently on rewatch; Zendaya steals every scene.", 5)
+        ]
+
+        shawshank = Movie("The Shawshank Redemption", year=1994, genre="Drama", director="Frank Darabont",
+                          description="Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+                          poster_url="https://image.tmdb.org/t/p/w600_and_h900_bestv2/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg"
+        )
+        shawshank.reviews = [
+            Review("You", "Timeless tale of hope — 'Get busy living or get busy dying' is etched in my brain forever.", 5),
+            Review("You", "Freeman and Robbins' chemistry carries the quiet moments; underrated score too.", 5)
+        ]
+
+        oppenheimer = Movie("Oppenheimer", year=2023, genre="Biography", director="Christopher Nolan",
+                            description="The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.",
+                            poster_url="https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
+        )
+        oppenheimer.reviews = [
+            Review("You", "A ticking-clock biopic that explodes into moral horror — Murphy's intensity is unmatched.", 5),
+            Review("You", "The black-and-white interludes add genius layers; left me rethinking history.", 5)
+        ]
+
+        self.movies.extend([inception, dune, shawshank, oppenheimer])
+
+    def search(self, query: str) -> List[Movie]:
+        query = query.lower()
+        return [m for m in self.movies if query in m.title.lower() or query in m.director.lower() or query in m.genre.lower()]
+
+db = Database()  # Singleton instance    movies = db.movies
 
     if query:
         query_lower = query.lower()
