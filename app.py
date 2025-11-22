@@ -1,14 +1,32 @@
 # app.py
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, Response
 from data import db, Movie, Review
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "super-secret-key-change-in-production")
 
-# ------------------------------------------------------------------
-# Routes
-# ------------------------------------------------------------------
+# ────────────────────────── ADMIN AUTH ──────────────────────────
+# Change this password to anything you want (keep the quotes)
+ADMIN_PASSWORD = "MySuperSecretPassword2025!"
+
+def check_auth():
+    auth = request.authorization
+    return auth and auth.username == "admin" and auth.password == ADMIN_PASSWORD
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not check_auth():
+            return Response(
+                'Login required to access this page.',
+                401,
+                {'WWW-Authenticate': 'Basic realm="Login Required"'}
+            )
+        return f(*args, **kwargs)
+    return decorated
+# ─────────────────────────────────────────────────────────────────
 
 @app.route("/")
 def index():
@@ -19,12 +37,7 @@ def index():
 
     if query:
         query_lower = query.lower()
-        movies = [
-            m for m in movies
-            if query_lower in m.title.lower()
-            or query_lower in m.director.lower()
-            or query_lower in m.genre.lower()
-        ]
+        movies = [m for m in movies if query_lower in m.title.lower() or query_lower in m.director.lower() or query_lower in m.genre.lower()]
 
     if genre:
         movies = [m for m in movies if m.genre.lower() == genre.lower()]
@@ -39,7 +52,26 @@ def index():
         selected_genre=genre
     )
 
+@app.route("/movie/<int:movie_id>")
+def movie_detail(movie_id):
+    movie = next((m for m in db.movies if m.id == movie_id), None)
+    if not movie:
+        flash("Movie not found!", "error")
+        return redirect("/")
+    return render_template("movie.html", movie=movie)
 
+@app.route("/add", methods=["GET", "POST"])
+@requires_auth          # ← PROTECTED
+def add_movie():
+    if request.method == "POST":
+        try:
+            new_movie = Movie(
+                title=request.form["title"].strip(),
+                year=int(request.form["year"]),
+                genre=request.form["genre"].strip(),
+                director=request.form["director"].strip(),
+                description=request.form.get("description", "").strip(),
+                poster_url=request.form.get("poster_url", "").strip()
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
     movie = next((m for m in db.movies if m.id == movie_id), None)
