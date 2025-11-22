@@ -32,9 +32,11 @@ header .container {
   gap:16px;
 }
 .logo {
-  height:58px;                   /* slightly smaller but still bold */
-  width:auto;
-  flex-shrink:0;
+  height: 58px;
+  width: auto;
+  flex-shrink: 0;
+  display: block;           /* ← ADD THIS LINE */
+  object-fit: contain;      /* ← ADD THIS LINE */
 }
 
 /* Search form — stays on same line until screen gets tiny */
