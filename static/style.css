@@ -1,83 +1,91 @@
 :root {
-  --celadon: #a7d49b;
-  --muted-teal: #92ac86;
-  --stone: #696047;
-  --espresso: #55251d;
-  --garnet: #5a1807;
-  --bg: #0f0c09;
-  --card-bg: #18120d;
-  --text: #e8e4db;
+  --celadon:#a7d49b;--muted-teal:#92ac86;--stone:#696047;--espresso:#55251d;--garnet:#5a1807;
+  --bg:#0f0c09;--card-bg:#18120d;--text:#e8e4db;
 }
 
 /* Reset & Base */
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
-.container { max-width:1200px; margin:0 auto; padding:0 20px; }
-a { color:var(--celadon); text-decoration:none; }
-a:hover { color:var(--muted-teal); }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+.container{max-width:1200px;margin:0 auto;padding:0 20px;}
+a{color:var(--celadon);text-decoration:none;}
+a:hover{color:var(--muted-teal);}
 
-/* HEADER — FIXED RESPONSIVE VERSION */
-header {
-  background: linear-gradient(135deg,#0f0c09 0%,#1a140f 100%);
+/* HEADER — FINAL RESPONSIVE FIX */
+header{
+  background:linear-gradient(135deg,#0f0c09,#1a140f);
   border-bottom:2px solid var(--stone);
-  position:sticky; top:0; z-index:100;
-  min-height:80px;               /* guarantees space */
+  position:sticky;top:0;z-index:100;
+  width:100vw;
+  left:0;
 }
-header .container {
+header .container{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:12px 20px;             /* reduced vertical padding */
-  flex-wrap:wrap;                /* allows graceful wrap on very small screens */
-  gap:16px;
+  min-height:80px;
+  padding:8px 20px;
+  flex-wrap:wrap;
+  gap:12px 20px;
 }
-.logo {
-  height: 58px;
-  width: auto;
-  flex-shrink: 0;
-  display: block;           /* ← ADD THIS LINE */
-  object-fit: contain;      /* ← ADD THIS LINE */
+.logo{
+  height:62px;
+  width:auto;
+  flex-shrink:0;
+  display:block;
 }
 
-/* Search form — stays on same line until screen gets tiny */
-.search-form {
+/* Search form — stays horizontal until ~700px */
+.search-form{
   display:flex;
   gap:10px;
   flex:1;
   max-width:600px;
-  flex-wrap:wrap;                /* prevents breaking on small phones */
 }
 .search-form input,
-.search-form select {
+.search-form select{
+  flex:1;
+  min-width:120px;
   padding:10px 12px;
   background:#1c1611;
   border:1px solid var(--stone);
-  color:var(--text);
   border-radius:6px;
-  flex:1;
-  min-width:140px;               /* prevents tiny boxes */
+  color:var(--text);
 }
-.search-form button {
+.search-form button{
+  padding:0 20px;
   background:var(--garnet);
   color:white;
   border:none;
-  padding:0 18px;
   border-radius:6px;
   cursor:pointer;
+  white-space:nowrap;
 }
 
-/* Cards & Buttons (unchanged) */
-.card { background:var(--card-bg); border:1px solid var(--stone); transition:all .3s; }
-.card:hover { transform:translateY(-8px); box-shadow:0 12px 30px rgba(146,172,134,.15); border-color:var(--muted-teal); }
-.add-btn, .btn-primary, .submit-review { background:var(--garnet); color:white; padding:10px 20px; border-radius:6px; }
-.add-btn:hover, .btn-primary:hover, .submit-review:hover { background:#6b2f1f; }
-.rating, .rating-big, .review-rating { color:var(--celadon); }
-.movie-detail { background:var(--card-bg); border:1px solid var(--stone); }
-.detail-poster { border:3px solid var(--stone); }
+/* Mobile — everything centers and wraps cleanly */
+@media (max-width: 720px){
+  header .container{
+    justify-content:center;
+    padding:12px 15px;
+  }
+  .logo{height:56px;}
+  .search-form{
+    order:3;
+    width:100%;
+    max-width:none;
+    justify-content:center;
+  }
+}
+@media (max-width: 480px){
+  .logo{height:50px;}
+  .search-form input,
+  .search-form select{min-width:100px;}
+}
 
-/* Mobile fallback — when screen < 600px */
-@media (max-width: 600px) {
-  header .container { padding:10px 15px; justify-content:center; }
-  .logo { height:50px; }
-  .search-form { width:100%; justify-content:center; }
-    }
+/* Rest of site (cards, buttons, etc.) */
+.card{background:var(--card-bg);border:1px solid var(--stone);transition:all .3s;border-radius:8px;overflow:hidden;}
+.card:hover{transform:translateY(-8px);box-shadow:0 12px 30px rgba(146,172,134,.2);border-color:var(--muted-teal);}
+.add-btn,.btn-primary,.submit-review{background:var(--garnet);color:white;padding:10px 20px;border-radius:6px;display:inline-block;}
+.add-btn:hover,.btn-primary:hover,.submit-review:hover{background:#6b2f1f;}
+.rating,.rating-big,.review-rating{color:var(--celadon);}
+.movie-detail{background:var(--card-bg);border:1px solid var(--stone);border-radius:8px;padding:20px;}
+.detail-poster{border:3px solid var(--stone);border-radius:8px;}
