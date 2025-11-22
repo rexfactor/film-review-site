@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;display=swap');
+      .imo { font-family: 'Cinzel', Georgia, serif; font-weight: 700; font-size: 82px; letter-spacing: -2px; }
+      .text-light { fill: #a7d49b; }
+      .text-dark { fill: #55251d; }
+      .accent { fill: #92ac86; }
+    </style>
+  </defs>
+
+  <!-- Subtle film-reel icon on the left -->
+  <g transform="translate(20,60)">
+    <circle cx="0" cy="0" r="38" fill="none" stroke="#696047" stroke-width="8"/>
+    <circle cx="0" cy="0" r="28" fill="none" stroke="#696047" stroke-width="5"/>
+    <path d="M -38,0 H -48 M 38,0 H 48 M 0,-38 V -48 M 0,38 V 48" stroke="#696047" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="10" fill="#5a1807"/>
+  </g>
+
+  <!-- IMO Reviews text -->
+  <text x="90" y="78" class="imo text-dark">IMO</text>
+  <text x="215" y="78" class="imo text-light" font-size="58">Reviews</text>
+  <text x="218" y="78" class="imo accent" font-size="58" opacity="0.4">Reviews</text>
+</svg>
