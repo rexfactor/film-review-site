@@ -7,57 +7,75 @@
   --bg: #0f0c09;
   --card-bg: #18120d;
   --text: #e8e4db;
-  --accent: #92ac86;
 }
 
 /* Reset & Base */
 * { margin:0; padding:0; box-sizing:border-box; }
-body { 
-  font-family: 'Segoe UI', system-ui, sans-serif; 
-  background: var(--bg); 
-  color: var(--text); 
-  line-height:1.6; 
-}
+body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
 .container { max-width:1200px; margin:0 auto; padding:0 20px; }
-a { color: var(--celadon); text-decoration:none; }
-a:hover { color: var(--muted-teal); }
+a { color:var(--celadon); text-decoration:none; }
+a:hover { color:var(--muted-teal); }
 
-/* Header */
-header { 
-  background: linear-gradient(135deg, #0f0c09 0%, #1a140f 100%);
-  border-bottom: 2px solid var(--stone); 
-  position: sticky; top: 0; z-index: 100; 
+/* HEADER — FIXED RESPONSIVE VERSION */
+header {
+  background: linear-gradient(135deg,#0f0c09 0%,#1a140f 100%);
+  border-bottom:2px solid var(--stone);
+  position:sticky; top:0; z-index:100;
+  min-height:80px;               /* guarantees space */
 }
-header .container { display:flex; justify-content:space-between; align-items:center; padding:1rem 20px; gap:1rem; }
-.logo { height: 66px; width: auto; }
-.search-form input, .search-form select { 
-  background: #1c1611; border:1px solid var(--stone); color: var(--text); 
+header .container {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 20px;             /* reduced vertical padding */
+  flex-wrap:wrap;                /* allows graceful wrap on very small screens */
+  gap:16px;
 }
-.search-form button { background: var(--garnet); }
-
-/* Cards & Buttons */
-.card { 
-  background: var(--card-bg); 
-  border: 1px solid var(--stone); 
-  transition: all 0.3s ease;
-}
-.card:hover { 
-  transform: translateY(-8px); 
-  box-shadow: 0 12px 30px rgba(146,172,134,0.15);
-  border-color: var(--muted-teal);
-}
-.add-btn, .btn-primary, .submit-review {
-  background: var(--garnet);
-  color: white;
-  transition: all 0.3s;
-}
-.add-btn:hover, .btn-primary:hover, .submit-review:hover {
-  background: #6b2f1f;
+.logo {
+  height:58px;                   /* slightly smaller but still bold */
+  width:auto;
+  flex-shrink:0;
 }
 
-/* Ratings */
-.rating, .rating-big, .review-rating { color: var(--celadon); }
+/* Search form — stays on same line until screen gets tiny */
+.search-form {
+  display:flex;
+  gap:10px;
+  flex:1;
+  max-width:600px;
+  flex-wrap:wrap;                /* prevents breaking on small phones */
+}
+.search-form input,
+.search-form select {
+  padding:10px 12px;
+  background:#1c1611;
+  border:1px solid var(--stone);
+  color:var(--text);
+  border-radius:6px;
+  flex:1;
+  min-width:140px;               /* prevents tiny boxes */
+}
+.search-form button {
+  background:var(--garnet);
+  color:white;
+  border:none;
+  padding:0 18px;
+  border-radius:6px;
+  cursor:pointer;
+}
 
-/* Movie detail */
-.movie-detail { background: var(--card-bg); border: 1px solid var(--stone); }
-.detail-poster { border: 3px solid var(--stone); }
+/* Cards & Buttons (unchanged) */
+.card { background:var(--card-bg); border:1px solid var(--stone); transition:all .3s; }
+.card:hover { transform:translateY(-8px); box-shadow:0 12px 30px rgba(146,172,134,.15); border-color:var(--muted-teal); }
+.add-btn, .btn-primary, .submit-review { background:var(--garnet); color:white; padding:10px 20px; border-radius:6px; }
+.add-btn:hover, .btn-primary:hover, .submit-review:hover { background:#6b2f1f; }
+.rating, .rating-big, .review-rating { color:var(--celadon); }
+.movie-detail { background:var(--card-bg); border:1px solid var(--stone); }
+.detail-poster { border:3px solid var(--stone); }
+
+/* Mobile fallback — when screen < 600px */
+@media (max-width: 600px) {
+  header .container { padding:10px 15px; justify-content:center; }
+  .logo { height:50px; }
+  .search-form { width:100%; justify-content:center; }
+    }
