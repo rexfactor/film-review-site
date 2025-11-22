@@ -1,40 +1,107 @@
-# Updated February 22
-# data.py
-from datetime import datetime
-from typing import List, Optional
+# app.py
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash, Response
+from data import db, Movie, Review
+from functools import wraps
 
-class Movie:
-    _id_counter = 1
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "super-secret-key-change-in-production")
 
-    def __init__(self, title: str, year: int, genre: str, director: str, poster_url: str = "", description: str = ""):
-        self.id = Movie._id_counter
-        Movie._id_counter += 1
-        self.title = title
-        self.year = year
-        self.genre = genre
-        self.director = director
-        self.poster_url = poster_url or f"https://via.placeholder.com/300x450?text={title.replace(' ', '+')}"
-        self.description = description
-        self.reviews: List[Review] = []
-        self.created_at = datetime.now()
+# ────────────────────────── ADMIN AUTH ──────────────────────────
+ADMIN_PASSWORD = "MySuperSecretPassword2025!"   # ← change this!
 
-    def average_rating(self) -> float:
-        if not self.reviews:
-            return 0.0
-        return round(sum(r.rating for r in self.reviews) / len(self.reviews), 1)
+def check_auth():
+    auth = request.authorization
+    return auth and auth.username == "admin" and auth.password == ADMIN_PASSWORD
 
-class Review:
-    def __init__(self, author: str, text: str, rating: int):
-        self.author = author
-        self.text = text
-        self.rating = rating  # 1–5
-        self.date = datetime.now().strftime("%B %d, %Y")
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not check_auth():
+            return Response(
+                'Login required.',
+                401,
+                {'WWW-Authenticate': 'Basic realm="Login Required"'}
+            )
+        return f(*args, **kwargs)
+    return decorated
+# ─────────────────────────────────────────────────────────────────
 
-class Database:
-    def __init__(self):
-        self.movies: List[Movie] = []
-        self._seed_data()
+@app.route("/")
+def index():
+    query = request.args.get("q", "").strip()
+    genre = request.args.get("genre", "").strip()
+    show_admin = request.args.get("admin") == "true"
 
+    movies = db.movies
+    if query:
+        q = query.lower()
+        movies = [m for m in movies if q in m.title.lower() or q in m.director.lower() or q in m.genre.lower()]
+    if genre:
+        movies = [m for m in movies if m.genre.lower() == genre.lower()]
+
+    genres = sorted({m.genre for m in db.movies})
+
+    return render_template(
+        "index.html",
+        movies=movies,
+        genres=genres,
+        query=query,
+        selected_genre=genre,
+        show_admin=show_admin
+    )
+
+@app.route("/movie/<int:movie_id>")
+def movie_detail(movie_id):
+    movie = next((m for m in db.movies if m.id == movie_id), None)
+    if not movie:
+        flash("Movie not found!", "error")
+        return redirect("/")
+    show_admin = request.args.get("admin") == "true"
+    return render_template("movie.html", movie=movie, show_admin=show_admin)
+
+@app.route("/add", methods=["GET", "POST"])
+@requires_auth
+def add_movie():
+    if request.method == "POST":
+        try:
+            new_movie = Movie(
+                title=request.form["title"].strip(),
+                year=int(request.form["year"]),
+                genre=request.form["genre"].strip(),
+                director=request.form["director"].strip(),
+                description=request.form.get("description", "").strip(),
+                poster_url=request.form.get("poster_url", "").strip() or ""
+            )
+            db.movies.append(new_movie)
+            flash("Movie added successfully!", "success")
+            return redirect(url_for("movie_detail", movie_id=new_movie.id))
+        except Exception:
+            flash("Error adding movie.", "error")
+    return render_template("add_movie.html")
+
+@app.route("/movie/<int:movie_id>/review", methods=["POST"])
+@requires_auth
+def add_review(movie_id):
+    movie = next((m for m in db.movies if m.id == movie_id), None)
+    if not movie:
+        return redirect("/")
+    text = request.form["text"].strip()
+    rating = int(request.form["rating"])
+    if text and 1 <= rating <= 5:
+        movie.reviews.append(Review("You", text, rating))
+        flash("Review added.", "success")
+    else:
+        flash("Invalid review.", "error")
+    return redirect(url_for("movie_detail", movie_id=movie_id) + ("?admin=true" if request.args.get("admin") == "true" else ""))
+
+# ────────────────────────── SERVER ──────────────────────────
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+else:
+    from waitress import serve
+    port = int(os.environ.get("PORT", 5000))
+    serve(app, host="0.0.0.0", port=port)
     def _seed_data(self):
         # Starter movies with YOUR placeholder reviews (customize these!)
         inception = Movie(
