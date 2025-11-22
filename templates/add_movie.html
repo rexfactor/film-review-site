@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Add New Movie{% endblock %}
+
+{% block content %}
+<div class="add-movie-page">
+    <h1>Add a New Movie</h1>
+    
+    <form method="POST" class="add-movie-form">
+        <label>Title *</label>
+        <input type="text" name="title" required maxlength="100">
+        
+        <div class="row">
+            <div>
+                <label>Year *</label>
+                <input type="number" name="year" min="1880" max="2030" required>
+            </div>
+            <div>
+                <label>Genre *</label>
+                <input type="text" name="genre" required placeholder="e.g. Sci-Fi, Drama, Comedy">
+            </div>
+        </div>
+        
+        <label>Director *</label>
+        <input type="text" name="director" required>
+        
+        <label>Poster URL (optional)</label>
+        <input type="url" name="poster_url" placeholder="https://image.tmdb.org/t/p/w600_and_h900_bestv2/...">
+        <small>Leave blank for auto-generated placeholder</small>
+        
+        <label>Description (optional)</label>
+        <textarea name="description" rows="5" placeholder="Brief plot summary..."></textarea>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Add Movie</button>
+            <a href="/" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
