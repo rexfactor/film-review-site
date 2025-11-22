@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="380" height="80" viewBox="0 0 380 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
-  <title id="title">IMO Reviews Logo</title>
+<svg width="360" height="72" viewBox="0 0 360 72" xmlns="http://www.w3.org/2000/svg">
+  <title>IMO Reviews Logo</title>
   <defs>
     <style type="text/css">
-      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;display=swap');
-      .imo { font-family: 'Cinzel', Georgia, serif; font-weight: 700; font-size: 70px; letter-spacing: -2px; }
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+      .imo { font-family: 'Cinzel', Georgia, serif; font-weight: 700; font-size: 64px; letter-spacing: -1.5px; }
       .light { fill: #a7d49b; }
       .dark { fill: #55251d; }
       .accent { fill: #92ac86; }
     </style>
   </defs>
-
-  <!-- Film reel icon -->
-  <g transform="translate(12,40)">
-    <circle cx="0" cy="0" r="32" fill="none" stroke="#696047" stroke-width="6"/>
-    <circle cx="0" cy="0" r="23" fill="none" stroke="#696047" stroke-width="4"/>
-    <path d="M-32,0 H-40 M32,0 H40 M0,-32 V-40 M0,32 V40" stroke="#696047" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="0" cy="0" r="8" fill="#5a1807"/>
+  <g transform="translate(10,36)">
+    <circle cx="0" cy="0" r="28" fill="none" stroke="#696047" stroke-width="5"/>
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#696047" stroke-width="3"/>
+    <path d="M-28,0 H-36 M28,0 H36 M0,-28 V-36 M0,28 V36" stroke="#696047" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="7" fill="#5a1807"/>
   </g>
-
-  <!-- Text -->
-  <text x="70" y="58" class="imo dark">IMO</text>
-  <text x="185" y="58" class="imo light" font-size="50">Reviews</text>
-  <text x="187" y="58" class="imo accent" font-size="50" opacity="0.4">Reviews</text>
+  <text x="65" y="52" class="imo dark">IMO</text>
+  <text x="170" y="52" class="imo light" font-size="46">Reviews</text>
+  <text x="172" y="52" class="imo accent" font-size="46" opacity="0.4">Reviews</text>
 </svg>
