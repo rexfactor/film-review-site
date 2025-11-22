@@ -2,7 +2,6 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-{# Only show "Add Movie" button when logged in as admin #}
 {% if is_admin %}
     <a href="{{ url_for('add_movie') }}" class="add-btn">+ Add Movie</a>
 {% endif %}
